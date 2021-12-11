@@ -2,11 +2,12 @@ package advent
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Queue
+import scala.io.Source
 
-object Day9 {
+object Day09 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(9)
+    val input = Source.fromResource("day09.txt").mkString
     val grid = input
       .linesIterator
       .toList
@@ -18,19 +19,24 @@ object Day9 {
     println(p2(grid))
   }
 
-  case class Point(x: Int, y: Int)
+  type Grid = Map[Point, Int]
 
-  def adjacent(p: Point): Seq[Point] = Seq(
-    p.copy(x = p.x - 1),
-    p.copy(x = p.x + 1),
-    p.copy(y = p.y - 1),
-    p.copy(y = p.y + 1)
-  )
+  case class Point(x: Int, y: Int) {
+    def neighbours(grid: Grid): Seq[Point] = {
+      val neighbours = for
+        nx <- x - 1 to x + 1
+        ny <- y - 1 to y + 1
+        if nx == x || ny == y
+      yield Point(nx, ny)
 
-  def sinks(grid: Map[Point, Int]): Seq[Point] =
+      neighbours.filter(n => n != this && grid.contains(n))
+    }
+  }
+
+  def sinks(grid: Grid): Seq[Point] =
     grid.keys
         .toSeq
-        .filter(p => grid(p) < adjacent(p).map(q => grid.getOrElse(q, 10)).min)
+        .filter(p => grid(p) < p.neighbours(grid).map(grid).min)
 
   def bfs(fn: Point => Seq[Point])(p: Point): LazyList[Point] = {
     def _bfs(q: Queue[Point], s: Set[Point]): LazyList[Point] = q match {
@@ -41,18 +47,18 @@ object Day9 {
     p #:: _bfs(Queue.empty ++ fn(p), Set.empty)
   }
 
-  def basin(grid: Map[Point, Int])(sink: Point): Set[Point] = {
-    val fn: Point => Seq[Point] = p => adjacent(p).filter(grid.contains).filter(q => grid(q) < 9)
+  def basin(grid: Grid)(sink: Point): Set[Point] = {
+    val fn: Point => Seq[Point] = p => p.neighbours(grid).filter(n => grid(n) < 9)
     bfs(fn)(sink).toSet
   }
 
-  def p1(grid: Map[Point, Int]): Any =
+  def p1(grid: Grid): Int =
     sinks(grid)
       .map(grid)
       .map(_ + 1)
       .sum
 
-  def p2(grid: Map[Point, Int]): Any =
+  def p2(grid: Grid): Int =
     sinks(grid)
       .map(basin(grid))
       .map(_.size)

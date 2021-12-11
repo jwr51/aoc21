@@ -1,51 +1,53 @@
 package advent
 
 import scala.annotation.tailrec
+import scala.io.Source
 
 object Day10 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(10)
-    println(p1(input))
-    println(p2(input))
+    val input = Source.fromResource("day10.txt").getLines().toSeq
+    val analyses = input.map(analyse)
+
+    println(p1(analyses))
+    println(p2(analyses))
   }
 
-  val left = List('[', '<', '{', '(')
-  val right = List(']', '>', '}', ')')
-  val errorTable = Map(')' -> 3, ']' -> 57, '}' -> 1197, '>' -> 25137)
-  val unclosedTable = Map('(' -> 1, '[' -> 2, '{' -> 3, '<' -> 4)
+  type Analysis = Either[Char, Seq[Char]]
+  case class Chunk(open: Char, close: Char, mismatchScore: Int, unclosedScore: Int)
+  val chunks = Map(
+    '(' -> Chunk('(', ')', mismatchScore = 3, unclosedScore = 1),
+    '[' -> Chunk('[', ']', mismatchScore = 57, unclosedScore = 2),
+    '{' -> Chunk('{', '}', mismatchScore = 1197, unclosedScore = 3),
+    '<' -> Chunk('<', '>', mismatchScore = 25137, unclosedScore = 4)
+  )
 
-  def analyse(line: String): (Option[Int], List[Char]) = {
+  def analyse(s: String): Analysis = {
     @tailrec
-    def fn(line: List[Char], open: List[Char], e: Option[Int]): (Option[Int], List[Char]) = e match {
-      case None => line match {
-        case c :: cs if left.contains(c)                    => fn(cs, c :: open, e)
-        case c :: cs if open.head == left(right.indexOf(c)) => fn(cs, open.tail, e)
-        case c :: _                                         => (Some(errorTable(c)), open)
-        case Nil                                            => (e, open)
-      }
-      case _    => (e, open)
+    def fn(todo: List[Char], open: List[Char]): Analysis = todo match {
+      case Nil     => Right(open)
+      case x :: xs =>
+        if open.isEmpty then fn(xs, x :: open)
+        else chunks.values.find(_.close == x) match {
+          case None    => fn(xs, x :: open)
+          case Some(c) =>
+            if c.open != open.head then Left(x)
+            else fn(xs, open.tail)
+        }
     }
 
-    fn(line.toList, List.empty, None)
+    fn(s.toList, List.empty)
   }
 
-  def error(line: String): Option[Int] = {
-    val (error, _) = analyse(line)
-    error
-  }
+  def error(c: Char): Int = chunks.values.find(_.close == c).get.mismatchScore
 
-  def p1(input: String): Any = input.linesIterator.flatMap(error).sum
+  def close(open: Seq[Char]): Long =
+    open.map(chunks).map(_.unclosedScore).foldLeft(0L)((acc, sc) => acc * 5 + sc)
 
-  def p2(input: String): Any = {
-    val scores = input
-      .linesIterator
-      .map(analyse)
-      .flatMap((e, o) => if e.isEmpty then Some(o) else None)
-      .map(_.map(unclosedTable))
-      .map(_.foldLeft(0L)((c, s) => c * 5 + s))
-      .toList
-      .sorted
+  def p1(input: Seq[Analysis]): Long = input.collect({ case Left(c) => error(c) }).sum
+
+  def p2(input: Seq[Analysis]): Long = {
+    val scores = input.collect({ case Right(o) => o }).map(close).sorted
     scores(scores.length / 2)
   }
 }

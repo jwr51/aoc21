@@ -1,11 +1,13 @@
 package advent
 
+import scala.io.Source
 import scala.math.max
 
-object Day5 {
+object Day05 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(5)
+    val input = Source.fromResource("day05.txt").getLines().map(parse).toSeq
+
     println(p1(input))
     println(p2(input))
   }
@@ -15,15 +17,14 @@ object Day5 {
 
   private val Pattern = """(\d+),(\d+) -> (\d+),(\d+)""".r
 
-  def parse(input: String): List[Line] =
-    input.linesIterator
-         .toList
-         .map { case Pattern(x1, y1, x2, y2) => (Point(x1.toInt, y1.toInt), Point(x2.toInt, y2.toInt)) }
+  def parse(s: String): Line = s match {
+    case Pattern(x1, y1, x2, y2) => (Point(x1.toInt, y1.toInt), Point(x2.toInt, y2.toInt))
+  }
 
   def vents(diag: Boolean)(l: Line): Seq[Point] = {
     val (p, q) = l
     val dx = (q.x - p.x).sign
-    val dy = (q.x - p.x).sign
+    val dy = (q.y - p.y).sign
 
     if (dx != 0 && dy != 0 && !diag) return List.empty
 
@@ -31,21 +32,14 @@ object Day5 {
     (0 to n).map(c => Point(p.x + dx * c, p.y + dy * c))
   }
 
-  def overlaps(fn: Line => Seq[Point])(lines: List[Line]): Set[Point] = {
+  def overlaps(fn: Line => Seq[Point])(lines: Seq[Line]): Set[Point] = {
     lines
       .flatMap(fn)
       .groupMapReduce(identity)(_ => 1)(_ + _)
-      .filter(_._2 >= 2)
-      .keySet
+      .filter(_._2 > 1).keySet
   }
 
-  def p1(input: String): Any = {
-    val lines = parse(input)
-    overlaps(vents(diag = false))(lines).size
-  }
+  def p1(input: Seq[Line]): Int = overlaps(vents(diag = false))(input).size
 
-  def p2(input: String): Any = {
-    val lines = parse(input)
-    overlaps(vents(diag = true))(lines).size
-  }
+  def p2(input: Seq[Line]): Int = overlaps(vents(diag = true))(input).size
 }

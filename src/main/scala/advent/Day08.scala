@@ -1,17 +1,21 @@
 package advent
 
-object Day8 {
+import scala.io.Source
+
+object Day08 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(8)
+    val input = Source.fromResource("day08.txt").getLines().toSeq
+    
     println(p1(input))
     println(p2(input))
   }
 
-  def p1(input: String): Any = input.linesIterator
-                                    .flatMap(_.split(" ").takeRight(4))
-                                    .map(_.length)
-                                    .count(l => l < 5 || l == 7)
+  def p1(input: Seq[String]): Int =
+    input
+      .flatMap(_.split(" ").takeRight(4))
+      .map(_.length)
+      .count(l => l < 5 || l == 7)
 
   /*def decode(line: String): Int = {
     val keys = List("abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg")
@@ -48,5 +52,5 @@ object Day8 {
     }).mkString.toInt
   }
 
-  def p2(input: String): Any = input.linesIterator.map(decode).sum
+  def p2(input: Seq[String]): Int = input.map(decode).sum
 }

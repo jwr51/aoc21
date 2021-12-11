@@ -1,16 +1,17 @@
 package advent
 
-object Day6 {
+import scala.io.Source
+
+object Day06 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(6)
+    val input = Source.fromResource("day06.txt").mkString.split(",").map(_.toInt).toSeq
+    
     println(p1(input))
     println(p2(input))
   }
 
-  def parse(input: String): List[Int] = input.split(",").map(_.toInt).toList
-
-  def population(input: List[Int], days: Int): Long = {
+  def population(input: Seq[Int], days: Int): Long = {
     def evolve(state: List[Long]): List[Long] = {
       val spawns :: tail = state
       tail.updated(6, tail(6) + spawns) :+ spawns
@@ -20,7 +21,7 @@ object Day6 {
     Iterator.iterate(state)(evolve).drop(days).next.sum
   }
 
-  def p1(input: String): Any = population(parse(input), days = 80)
+  def p1(input: Seq[Int]): Long = population(input, days = 80)
 
-  def p2(input: String): Any = population(parse(input), days = 256)
+  def p2(input: Seq[Int]): Long = population(input, days = 256)
 }

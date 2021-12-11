@@ -1,21 +1,14 @@
 package advent
 
 import scala.annotation.tailrec
+import scala.io.Source
 
-object Day4 {
+object Day04 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(4)
-    println(p1(input))
-    println(p2(input))
-  }
-
-  type Board = Seq[Seq[Int]]
-
-  def parse(input: String): (Seq[Int], Set[Board]) = {
-    val lines = input.linesIterator.toSeq
-    val draws = lines.head.split(",").map(_.toInt).toSeq
-    val boards = lines.drop(2)
+    val input = Source.fromResource("day04.txt").getLines().toSeq
+    val nums = input.head.split(",").map(_.toInt).toSeq
+    val boards = input.drop(2)
                       .filter(_.nonEmpty)
                       .map(_.trim())
                       .map(_.split("""[^\d]+"""))
@@ -23,15 +16,16 @@ object Day4 {
                       .grouped(5)
                       .grouped(5)
                       .toSet
-    (draws, boards)
+
+    println(p1(nums, boards))
+    println(p2(nums, boards))
   }
 
-  def wins(b: Board, ns: Seq[Int]): Boolean = (b ++ b.transpose).exists(qs => qs.forall(ns.contains(_)))
+  type Board = Seq[Seq[Int]]
 
-  def score(b: Board, ns: Seq[Int]): Int = {
-    val last = ns.last
-    b.flatten.filter(!ns.contains(_)).sum * last
-  }
+  def wins(b: Board, nums: Seq[Int]): Boolean = (b ++ b.transpose).exists(_.forall(nums.contains(_)))
+
+  def score(b: Board, nums: Seq[Int]): Int = b.flatten.filter(!nums.contains(_)).sum * nums.last
 
   def play(bs: Set[Board], nums: Seq[Int]): Seq[Int] = {
     @tailrec
@@ -46,13 +40,7 @@ object Day4 {
     _play(bs, List.empty, nums.toList, Seq.empty)
   }
 
-  def p1(input: String): Any = {
-    val (nums, boards) = parse(input)
-    play(boards, nums).head
-  }
+  def p1(nums: Seq[Int], boards: Set[Board]): Int = play(boards, nums).head
 
-  def p2(input: String): Any = {
-    val (nums, boards) = parse(input)
-    play(boards, nums).last
-  }
+  def p2(nums: Seq[Int], boards: Set[Board]): Int = play(boards, nums).last
 }

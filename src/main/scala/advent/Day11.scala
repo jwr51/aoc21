@@ -1,11 +1,12 @@
 package advent
 
 import scala.annotation.tailrec
+import scala.io.Source
 
 object Day11 {
 
   def main(args: Array[String]): Unit = {
-    val input = Advent.input(11)
+    val input = Source.fromResource("day11.txt").mkString
     val grid = input
       .linesIterator
       .toList
@@ -41,14 +42,14 @@ object Day11 {
     fn(grid, grid.keys.toSeq, Set.empty)
   }
 
-  def p1(grid: Grid): Any =
+  def p1(grid: Grid): Int =
     Iterator
       .iterate(grid)(step)
       .slice(1, 101)
       .flatMap(_.values)
       .count(_ == 0)
 
-  def p2(grid: Grid): Any =
+  def p2(grid: Grid): Int =
     Iterator
       .iterate(grid)(step)
       .indexWhere(_.values.forall(_ == 0))
