@@ -2,14 +2,13 @@ package advent
 
 import scala.io.Source
 
-object Day08 {
+object Day08:
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     val input = Source.fromResource("day08.txt").getLines().toSeq
-    
+
     println(p1(input))
     println(p2(input))
-  }
 
   def p1(input: Seq[String]): Int =
     input
@@ -17,28 +16,13 @@ object Day08 {
       .map(_.length)
       .count(l => l < 5 || l == 7)
 
-  /*def decode(line: String): Int = {
-    val keys = List("abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg")
-    val maps = "abcdefg".permutations.map(_.zip("abcdefg")).map(_.toMap).toSeq
-
-    val outs = maps.flatMap(cs => {
-      val mapped = line.map(c => cs.getOrElse(c, c))
-      val words = mapped.split(" ").map(_.sorted).toSeq
-      val (signal, output) = (words.take(10), words.takeRight(4))
-
-      if signal.sorted != keys.sorted then None else Some(output.map(keys.indexOf).mkString.toInt)
-    })
-
-    if outs.size == 1 then outs.head else throw new Error("no unique solution")
-  }*/
-
-  def decode(line: String): Int = {
+  def decode(line: String): Int =
     val words = line.split(" ").map(_.sorted).toSeq
     val (signal, keys) = (words.take(10), words.takeRight(4))
 
     def common(s: String, len: Int): Int = s.intersect(signal.find(_.length == len).get).length
 
-    keys.map(k => k.length match {
+    keys.map(k => k.length match
       case 2                            => 1
       case 3                            => 7
       case 4                            => 4
@@ -49,8 +33,6 @@ object Day08 {
       case 6 if common(k, len = 3) == 3 => 0 // contains 7
       case 6                            => 6
       case 7                            => 8
-    }).mkString.toInt
-  }
+    ).mkString.toInt
 
   def p2(input: Seq[String]): Int = input.map(decode).sum
-}

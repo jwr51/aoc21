@@ -3,43 +3,36 @@ package advent
 import scala.io.Source
 import scala.math.max
 
-object Day05 {
+object Day05:
 
-  def main(args: Array[String]): Unit = {
-    val input = Source.fromResource("day05.txt").getLines().map(parse).toSeq
+  def main(args: Array[String]): Unit =
+    val input =
+      Source
+        .fromResource("day05.txt")
+        .getLines()
+        .map(_.split("""[^\d]+""").map(_.toInt))
+        .map { case Array(x1, y1, x2, y2) => Line(Point(x1, y1), Point(x2, y2)) }
+        .toSeq
 
     println(p1(input))
     println(p2(input))
-  }
 
   case class Point(x: Int, y: Int)
-  type Line = (Point, Point)
+  case class Line(a: Point, b: Point) {
+    val diagonal: Boolean = a.x != b.x && a.y != b.y
+    val length: Int = max((b.x - a.x).abs, (b.y - a.y).abs)
 
-  private val Pattern = """(\d+),(\d+) -> (\d+),(\d+)""".r
-
-  def parse(s: String): Line = s match {
-    case Pattern(x1, y1, x2, y2) => (Point(x1.toInt, y1.toInt), Point(x2.toInt, y2.toInt))
+    def points: Seq[Point] =
+      val dx = (b.x - a.x).sign
+      val dy = (b.y - a.y).sign
+      (0 to length).map(n => Point(a.x + dx * n, a.y + dy * n))
   }
 
-  def vents(diag: Boolean)(l: Line): Seq[Point] = {
-    val (p, q) = l
-    val dx = (q.x - p.x).sign
-    val dy = (q.y - p.y).sign
+  def overlaps(lines: Seq[Line]): Int =
+    lines.flatMap(_.points)
+         .groupMapReduce(identity)(_ => 1)(_ + _)
+         .count(_._2 > 1)
 
-    if (dx != 0 && dy != 0 && !diag) return List.empty
+  def p1(input: Seq[Line]): Int = overlaps(input.filterNot(_.diagonal))
 
-    val n = max((q.x - p.x).abs, (q.y - p.y).abs)
-    (0 to n).map(c => Point(p.x + dx * c, p.y + dy * c))
-  }
-
-  def overlaps(fn: Line => Seq[Point])(lines: Seq[Line]): Set[Point] = {
-    lines
-      .flatMap(fn)
-      .groupMapReduce(identity)(_ => 1)(_ + _)
-      .filter(_._2 > 1).keySet
-  }
-
-  def p1(input: Seq[Line]): Int = overlaps(vents(diag = false))(input).size
-
-  def p2(input: Seq[Line]): Int = overlaps(vents(diag = true))(input).size
-}
+  def p2(input: Seq[Line]): Int = overlaps(input)
