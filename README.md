@@ -18,3 +18,4 @@ Scala solutions for the 2021 [Advent of Code](https://www.adventofcode.com) chal
 | [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10)        | [Source](src/main/scala/advent/Day10.scala) | 
 | [Day 11: Dumbo Octopus](https://adventofcode.com/2021/day/11)         | [Source](src/main/scala/advent/Day11.scala) | 
 | [Day 12: Passage Pathing](https://adventofcode.com/2021/day/12)       | [Source](src/main/scala/advent/Day12.scala) | 
+| [Day 13: Transparent Origami](https://adventofcode.com/2021/day/13)   | [Source](src/main/scala/advent/Day13.scala) | 
