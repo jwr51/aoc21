@@ -29,3 +29,4 @@ Scala solutions for the 2021 [Advent of Code](https://www.adventofcode.com) chal
 | [Day 21: Dirac Dice](https://adventofcode.com/2021/day/21)              | [Source](src/main/scala/advent/Day21.scala) | 
 | [Day 22: Reactor Reboot](https://adventofcode.com/2021/day/22)          | [Source](src/main/scala/advent/Day22.scala) | 
 | [Day 23: Amphipod](https://adventofcode.com/2021/day/23)                | [Source](src/main/scala/advent/Day23.scala) | 
+| [Day 23: Arithmetic Logic Unit](https://adventofcode.com/2021/day/24)   | [Source](src/main/scala/advent/Day24.scala) | 
