@@ -27,3 +27,4 @@ Scala solutions for the 2021 [Advent of Code](https://www.adventofcode.com) chal
 | [Day 19: Beacon Scanner](https://adventofcode.com/2021/day/19)          | [Source](src/main/scala/advent/Day19.scala) | 
 | [Day 20: Trench Map](https://adventofcode.com/2021/day/20)              | [Source](src/main/scala/advent/Day20.scala) | 
 | [Day 21: Dirac Dice](https://adventofcode.com/2021/day/21)              | [Source](src/main/scala/advent/Day21.scala) | 
+| [Day 22: Reactor Reboot](https://adventofcode.com/2021/day/22)          | [Source](src/main/scala/advent/Day22.scala) | 
