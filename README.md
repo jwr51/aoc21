@@ -26,3 +26,4 @@ Scala solutions for the 2021 [Advent of Code](https://www.adventofcode.com) chal
 | [Day 18: Snailfish](https://adventofcode.com/2021/day/18)               | [Source](src/main/scala/advent/Day18.scala) | 
 | [Day 19: Beacon Scanner](https://adventofcode.com/2021/day/19)          | [Source](src/main/scala/advent/Day19.scala) | 
 | [Day 20: Trench Map](https://adventofcode.com/2021/day/20)              | [Source](src/main/scala/advent/Day20.scala) | 
+| [Day 21: Dirac Dice](https://adventofcode.com/2021/day/21)              | [Source](src/main/scala/advent/Day21.scala) | 
