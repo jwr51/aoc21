@@ -21,3 +21,4 @@ Scala solutions for the 2021 [Advent of Code](https://www.adventofcode.com) chal
 | [Day 13: Transparent Origami](https://adventofcode.com/2021/day/13)     | [Source](src/main/scala/advent/Day13.scala) | 
 | [Day 14: Extended Polymerization](https://adventofcode.com/2021/day/14) | [Source](src/main/scala/advent/Day14.scala) | 
 | [Day 15: Chiton](https://adventofcode.com/2021/day/15)                  | [Source](src/main/scala/advent/Day15.scala) | 
+| [Day 16: Packet Decoder](https://adventofcode.com/2021/day/16)          | [Source](src/main/scala/advent/Day16.scala) | 
